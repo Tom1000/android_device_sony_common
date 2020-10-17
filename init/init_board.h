@@ -44,6 +44,11 @@
 #define DEV_BLOCK_FOTA_PATH DEV_BLOCK_PATH "p" STR(DEV_BLOCK_FOTA_NUM)
 #endif
 
+// Constants: Device bootloader specifics
+#ifdef PRODUCT_PLATFORM_SHINANO
+ #define TARGET_SOMC_S1BOOT
+#endif
+
 // Constants: warmboot commands
 #ifndef WARMBOOT_CMDLINE
 #define WARMBOOT_CMDLINE "/proc/cmdline"
@@ -54,8 +59,13 @@
 #ifndef WARMBOOT_MULTIROM
 #define WARMBOOT_MULTIROM "mrom_kexecd=1"
 #endif
+
 #ifndef WARMBOOT_RECOVERY
-#define WARMBOOT_RECOVERY "warmboot=0x77665502"
+ #ifdef TARGET_SOMC_S1BOOT
+  #define WARMBOOT_RECOVERY "warmboot=0x6f656d46"
+ #else
+  #define WARMBOOT_RECOVERY "warmboot=0x77665502"
+ #endif
 #endif
 
 // Constants: init configurations

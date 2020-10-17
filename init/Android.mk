@@ -40,6 +40,10 @@ LOCAL_CPPFLAGS := \
     -Wextra \
     -Werror
 
+ifeq ($(PRODUCT_PLATFORM),shinano)
+     LOCAL_CPPFLAGS += -DPRODUCT_PLATFORM_SHINANO
+endif
+
 ifneq ($(BOARD_SONY_INIT_FLAGS),)
 LOCAL_CFLAGS += \
     $(BOARD_SONY_INIT_FLAGS)
