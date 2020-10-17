@@ -30,7 +30,7 @@
  *
  * Copyright (c) 2013
  * Copyright (C) 2016 The CyanogenMod Project
- * Copyright (C) 2017-2019 The LineageOS Project
+ * Copyright (C) 2017-2020 The LineageOS Project
  */
 
 #include <stdio.h>
@@ -58,6 +58,7 @@
 // Ramdisk compression header buffers
 const char gzip_header[] = { 0x1f, 0x8b };
 const char lzma_header[] = { 0x5d, 0x00, 0x00, 0x80, 0x00, 0xff };
+const char xz_header[]   = { 0xFD, '7', 'z', 'X', 'Z', 0x00 };
 
 typedef char* byte_p;
 
@@ -231,13 +232,17 @@ int copy_file_part(const char* infile, const char* outfile,
 		size_t uncompressed_size = 0;
 
 		if (!memcmp(gzip_header, buffer, sizeof(gzip_header))) {
-			printf("GZIP ramdisk detected\n");
+			printf("GZIP compressed ramdisk detected\n");
 			uncompressed_size = uncompress_gzip_memory(buffer, file_size,
 				uncompressed_buffer, MEMORY_BUFFER_SIZE);
 		} else if (!memcmp(lzma_header, buffer, sizeof(lzma_header))) {
-			printf("LZMA ramdisk detected\n");
+			printf("LZMA compressed ramdisk detected\n");
 			uncompressed_size = uncompress_lzma_memory(buffer, file_size,
 				uncompressed_buffer, MEMORY_BUFFER_SIZE);
+		} else if (!memcmp(xz_header, buffer, sizeof(xz_header))) {
+			printf("XZ compressed ramdisk detected\n");
+			printf("ERROR: XZ compression not yet implemented\n");
+			uncompressed_size = -1;
 		}
 
 		free(buffer);
